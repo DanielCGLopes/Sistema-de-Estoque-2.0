@@ -38,6 +38,4 @@ public abstract class MovimentacaoEstoque {
     public void setTipo(String tipo){
         this.tipo = tipo;
     }
-
-
 }
