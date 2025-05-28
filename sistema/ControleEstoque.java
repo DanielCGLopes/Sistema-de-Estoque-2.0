@@ -1,3 +1,3 @@
-public class ControleEstouqe {
+public class ControleEstoque {
 
 }
