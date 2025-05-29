@@ -1,41 +1,34 @@
-public abstract class MovimentacaoEstoque {
+public abstract class MovimentacaoEstoque implements Processavel {
     
     private int quantidade;
     private String data;
     private String tipo;
     
-    //Construtor 
+    // Construtor
     public MovimentacaoEstoque (int quantidade, String data,String tipo){
         this.quantidade = quantidade;
         this.data = data;
         this.tipo = tipo;
     }
 
-    
+    // Método abstrato que as subclasses vão implementar
+    @Override
+    public abstract boolean validarMovimentacao();
 
+    @Override
+    public abstract boolean processarMovimentacao();
 
-    //Getters e Setters
+    // Getters 
     public int getQuantidade(){
         return quantidade;
-    }
-
-    public void setQuantidade(int quantidade){
-        this.quantidade = quantidade;
     }
 
     public String getData(){
         return data;
     }
 
-    public void setData(String data){
-        this.data = data;
-    }
-    
     public String getTipo(){
         return tipo;
     }
 
-    public void setTipo(String tipo){
-        this.tipo = tipo;
-    }
 }
