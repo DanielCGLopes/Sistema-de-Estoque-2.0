@@ -1,4 +1,3 @@
-import java.time.LocalDate;
 import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
@@ -22,16 +21,28 @@ public class Main {
                 case 1:
                         System.out.println("[MOVIMENTAÇÃO]");
                         boolean registroBemSucedido;
+                        String dataMov = null;
+                        MovimentacaoEstoque movRegistrada;
                         do {
+                            // Inserir a quantidade
                             System.out.print("Digite a quantidade (+/-): "); 
-                            int quantidade = scanner.nextInt(); // Scanneia a quantidade
-                            String data = LocalDate.now().toString(); // Registra o horário
+                            int quantidade = scanner.nextInt(); // Scanneia a quantidade inserida
+                            // Escolhe se vai ter data ou não
+                            System.out.print("Deseja inserir a data da movimentação? (s/n): ");
+                            scanner.nextLine(); // Limpando o buffer do teclado
+                            String escolhaData = scanner.nextLine().toLowerCase(); // Scaneia o (s/n)
 
-                            // Passa por todas as validações e registra o movimento
-                            MovimentacaoEstoque movRegistrada = estoque.registrarMovimentacao(quantidade,data);
+                            if (escolhaData.equals("s")) { // Caso (s), inserir a data
+                                System.out.print("Digite a data (formato DD/MM/AAAA): ");
+                                dataMov = scanner.nextLine(); // Scaneia a data
+                                movRegistrada = estoque.registrarMovimentacao(quantidade, dataMov); // Chama o método
+                            } else {
+                                // Chama o método que passa null para a data
+                                movRegistrada = estoque.registrarMovimentacao(quantidade);
+                            }
+                            
                             registroBemSucedido = (movRegistrada != null); // RegistroBemSucedido recebe true caso movRegistrada for diferente de null
                             if(registroBemSucedido){ // caso for true
-                            System.out.println("Movimentação registrada!");
                             System.out.println("Saldo atual: " + estoque.getSaldoAtual() + " unidades"); // Mostra o saldo
                             System.out.println("");
                             }
@@ -41,11 +52,15 @@ public class Main {
                 case 2:
                         System.out.println("[HISTÓRICO]");
                         MovimentacaoEstoque[] lista = estoque.getHistorico();
-                        int i = 1;
+                        int i = 1; // Para não dar erro no método adcionarHistorico
                         for (MovimentacaoEstoque m : lista){ // A variável "m" vai percorrer todos os números dentro de "lista"
                             if(m != null){ // Variável "m" tem que ser diferente de null
+                            String infoData = "";
+                            if (m.getData() != null && !m.getData().isEmpty()) { // Verifica se não é nula e não está vazia
+                                infoData = " em " + m.getData();
+                            }
                             String sinal = m.getTipo().equals("Entrada") ? "+" : "-"; // Cria uma variável para registrar o sinal da movimentação
-                                System.out.println(i + ". " + sinal + m.getQuantidade() + " unidades (" + m.getTipo() + ")"); // Mostra o historico formatado
+                                System.out.println(i + ". " + sinal + m.getQuantidade() + " unidades (" + m.getTipo() + ")" + infoData); // Mostra o historico formatado
                             }
                         }
                         System.out.println("Saldo Total: " + estoque.getSaldoAtual() + " unidades");

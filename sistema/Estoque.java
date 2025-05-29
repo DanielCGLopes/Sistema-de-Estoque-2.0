@@ -8,7 +8,11 @@ public class Estoque {
     public Estoque(){
         // Inicialização padrão
     }
-
+    // Caso o usuario não insira a data 
+    public MovimentacaoEstoque registrarMovimentacao(int quantidade){
+        // Retorna ao método que possua toda a lógica
+        return registrarMovimentacao(quantidade, null);
+    }
     public MovimentacaoEstoque registrarMovimentacao(int quantidade, String data){
         MovimentacaoEstoque mov;
         
@@ -26,7 +30,7 @@ public class Estoque {
         }
 
         // 3° Passo: Não permitir o saldo ficar negativo
-        if(mov instanceof Saida){
+        if(mov instanceof Saida){ // mov pertence à Saida
             if (this.saldoAtual < mov.getQuantidade()) {
                 System.out.println("Erro: Saldo insuficiente para realizar esta saída.");
                 return null; // Retorna a null se o saldo for negativo
@@ -42,7 +46,9 @@ public class Estoque {
                 return null; // Retorna null se exceder o limite
             }
         }
+
         // 5° Passo: Caso passe por todas validações adiciona ao historico e atualiza o saldo
+        mov.processarMovimentacao();
         adicionarHistorico(mov);
         atualizarSaldo(mov);
         return mov;
@@ -54,7 +60,7 @@ public class Estoque {
         indiceAtual++;
     }
 
-    // Método getter para acessar o historico e o saldo atual
+    // Métodos getters para acessar o historico e o saldo atual
     public MovimentacaoEstoque[] getHistorico() {
         return historico;
     }
@@ -64,7 +70,7 @@ public class Estoque {
     
     // Método para atualizar o saldo
     private void atualizarSaldo(MovimentacaoEstoque mov){
-        if (mov instanceof Entrada) {
+        if (mov instanceof Entrada) { // mov pertence à Entrada
             saldoAtual += mov.getQuantidade(); // Soma se for Entrada
         } else {
             saldoAtual -= mov.getQuantidade(); // Subtrai se for Saida

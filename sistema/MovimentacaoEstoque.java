@@ -12,8 +12,11 @@ public abstract class MovimentacaoEstoque implements Processavel {
     }
 
     // Método abstrato que as subclasses vão implementar
-    public abstract boolean validarQuantidade();
+    @Override
+    public abstract boolean validarMovimentacao();
 
+    @Override
+    public abstract boolean processarMovimentacao();
 
     // Getters 
     public int getQuantidade(){
