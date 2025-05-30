@@ -31,7 +31,7 @@ public class Main {
                             System.out.print("Deseja inserir a data da movimentação? (s/n): ");
                             scanner.nextLine(); // Limpando o buffer do teclado
                             String escolhaData = scanner.nextLine().toLowerCase(); // Scaneia o (s/n)
-
+                            
                             if (escolhaData.equals("s")) { // Caso (s), inserir a data
                                 System.out.print("Digite a data (formato DD/MM/AAAA): ");
                                 dataMov = scanner.nextLine(); // Scaneia a data
@@ -51,16 +51,17 @@ public class Main {
 
                 case 2:
                         System.out.println("[HISTÓRICO]");
-                        MovimentacaoEstoque[] lista = estoque.getHistorico();
-                        int i = 1; // Para não dar erro no método adcionarHistorico
+                        MovimentacaoEstoque[] lista = estoque.getHistorico(); // Trazer o vetor privado para a Main
+                        int i = 1; 
                         for (MovimentacaoEstoque m : lista){ // A variável "m" vai percorrer todos os números dentro de "lista"
                             if(m != null){ // Variável "m" tem que ser diferente de null
-                            String infoData = "";
-                            if (m.getData() != null && !m.getData().isEmpty()) { // Verifica se não é nula e não está vazia
-                                infoData = " em " + m.getData();
-                            }
-                            String sinal = m.getTipo().equals("Entrada") ? "+" : "-"; // Cria uma variável para registrar o sinal da movimentação
+                                String infoData = "";
+                                if (m.getData() != null && !m.getData().isEmpty()) { // Verifica se não é nula e não está vazia
+                                    infoData = " em " + m.getData();
+                                }
+                                String sinal = m.getTipo().equals("Entrada") ? "+" : "-"; // Cria uma variável para registrar o sinal da movimentação
                                 System.out.println(i + ". " + sinal + m.getQuantidade() + " unidades (" + m.getTipo() + ")" + infoData); // Mostra o historico formatado
+                                i++;
                             }
                         }
                         System.out.println("Saldo Total: " + estoque.getSaldoAtual() + " unidades");
