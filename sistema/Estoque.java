@@ -16,20 +16,26 @@ public class Estoque {
     public MovimentacaoEstoque registrarMovimentacao(int quantidade, String data){
         MovimentacaoEstoque mov;
         
-        // 1° Passo: Determinar se é Entrada ou Saida
+        // 1º Passo: Validação da Quantidade(não pode ser zero)
+        if (quantidade == 0) {
+            System.out.println("Erro: A quantidade da movimentação não pode ser zero.");
+            return null;
+        }
+
+        // 2° Passo: Determinar se é Entrada ou Saida
         if (quantidade > 0){
             mov = new Entrada(quantidade, data); // Variável mov pertence à Entrada
         } else { 
             mov = new Saida(-quantidade, data); // Variável mov pertence à Saída
         }
         
-        // 2° Passo: Validar a transação individual (min: 0,máx: 999)
+        // 3° Passo: Validar a transação individual (min: 0,máx: 999)
         if (!mov.validarMovimentacao()) {
             System.out.println("Erro: Quantidade da movimentação inválida (fora do limite da transação).");
             return null; // Retorna a null se a validação falhar
         }
 
-        // 3° Passo: Não permitir o saldo ficar negativo
+        // 4° Passo: Não permitir o saldo ficar negativo
         if(mov instanceof Saida){ // mov pertence à Saida
             if (this.saldoAtual < mov.getQuantidade()) {
                 System.out.println("Erro: Saldo insuficiente para realizar esta saída.");
@@ -37,9 +43,9 @@ public class Estoque {
             }
         }
 
-        // 4° Passo: Não permitir o saldo ultrapassar 999 unidades
+        // 5° Passo: Não permitir o saldo ultrapassar 999 unidades
         if (mov instanceof Entrada) { // Verifica se é uma instância de Entrada
-            // Se adicionar a quantidade exceder o limite máximo do estoque
+            // Se a quantidade adicionada exceder o limite máximo do estoque
             int limiteMaxEstoque = 999;
             if ((this.saldoAtual + mov.getQuantidade()) > limiteMaxEstoque) {
                 System.out.println("Erro: Não é possível adicionar esta quantidade. O estoque excederia o limite máximo de " + limiteMaxEstoque + " unidades.");
@@ -47,7 +53,7 @@ public class Estoque {
             }
         }
 
-        // 5° Passo: Caso passe por todas validações adiciona ao historico e atualiza o saldo
+        // 6° Passo: Caso passe por todas validações adiciona ao historico e atualiza o saldo
         mov.processarMovimentacao();
         adicionarHistorico(mov);
         atualizarSaldo(mov);
@@ -80,7 +86,7 @@ public class Estoque {
     // Método para calcular e mostrar as estatisticas
     public String getEstatisticas() {
         int total = 0, soma = 0, maiorEntrada = 0, maiorSaida = 0;
-        for (MovimentacaoEstoque mov : historico) {// A variável "mov" vai percorrer todos os números dentro de "historico"
+        for (MovimentacaoEstoque mov : historico) { // A variável "mov" vai percorrer todos os números dentro de "historico"
             if (mov != null) {
                 soma += mov.getQuantidade(); 
                 total++;
