@@ -55,10 +55,12 @@ public class Main {
                         int i = 1; 
                         for (MovimentacaoEstoque m : lista){ // A variável "m" vai percorrer todos os números dentro de "lista"
                             if(m != null){ // Variável "m" tem que ser diferente de null
+
                                 String infoData = "";
                                 if (m.getData() != null && !m.getData().isEmpty()) { // Verifica se não é nula e não está vazia
                                     infoData = " em " + m.getData();
                                 }
+                                
                                 String sinal = m.getTipo().equals("Entrada") ? "+" : "-"; // Cria uma variável para registrar o sinal da movimentação
                                 System.out.println(i + ". " + sinal + m.getQuantidade() + " unidades (" + m.getTipo() + ")" + infoData); // Mostra o historico formatado
                                 i++;
