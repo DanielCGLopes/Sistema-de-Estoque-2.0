@@ -1,4 +1,4 @@
-public abstract class MovimentacaoEstoque implements Processavel {
+public abstract class MovimentacaoEstoque {
     
     private int quantidade;
     private String data;
@@ -10,13 +10,6 @@ public abstract class MovimentacaoEstoque implements Processavel {
         this.data = data;
         this.tipo = tipo;
     }
-
-    // Método abstrato que as subclasses vão implementar
-    @Override
-    public abstract boolean validarMovimentacao();
-
-    @Override
-    public abstract boolean processarMovimentacao();
 
     // Getters 
     public int getQuantidade(){

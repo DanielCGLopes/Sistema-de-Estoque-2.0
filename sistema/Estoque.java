@@ -1,26 +1,26 @@
+import java.util.ArrayList;
 public class Estoque {
 
-    private MovimentacaoEstoque[] historico = new MovimentacaoEstoque[10]; // Array de 10 números
+    private ArrayList<MovimentacaoEstoque> historico = new ArrayList<>();
     private int saldoAtual = 0;
-    private int indiceAtual = 0; // Usado para gerenciar o Array 
 
     // Construtor
     public Estoque(){
         // Inicialização padrão
     }
-    // Caso o usuario não insira a data 
-    public MovimentacaoEstoque registrarMovimentacao(int quantidade){
-        // Retorna ao método que possua toda a lógica
-        return registrarMovimentacao(quantidade, null);
+
+    public MovimentacaoEstoque registrarMovimentacao(int quantidade) throws EstoqueException {
+        return registrarMovimentacao(quantidade, null); // Passa null para a data
     }
-    public MovimentacaoEstoque registrarMovimentacao(int quantidade, String data){
-        MovimentacaoEstoque mov;
-        
+
+    public MovimentacaoEstoque registrarMovimentacao(int quantidade, String data) throws EstoqueException{
+
         // 1º Passo: Validação da Quantidade(não pode ser zero)
         if (quantidade == 0) {
-            System.out.println("Erro: A quantidade da movimentação não pode ser zero.");
-            return null;
+            throw new EstoqueException("A quantidade da movimentação não pode ser zero.");
         }
+
+        MovimentacaoEstoque mov;
 
         // 2° Passo: Determinar se é Entrada ou Saida
         if (quantidade > 0){
@@ -30,16 +30,14 @@ public class Estoque {
         }
         
         // 3° Passo: Validar a transação individual (min: 0,máx: 999)
-        if (!mov.validarMovimentacao()) {
-            System.out.println("Erro: Quantidade da movimentação inválida (fora do limite da transação).");
-            return null; // Retorna a null se a validação falhar
+        if (!((Processavel) mov).validarMovimentacao()) {
+            throw new EstoqueException("Quantidade da movimentação inválida (fora do limite da transação).");
         }
 
         // 4° Passo: Não permitir o saldo ficar negativo
         if(mov instanceof Saida){ // mov pertence à Saida
             if (this.saldoAtual < mov.getQuantidade()) {
-                System.out.println("Erro: Saldo insuficiente para realizar esta saída.");
-                return null; // Retorna a null se o saldo for negativo
+                throw new EstoqueException("Saldo insuficiente para realizar esta saída.");
             }
         }
 
@@ -48,26 +46,39 @@ public class Estoque {
             // Se a quantidade adicionada exceder o limite máximo do estoque
             int limiteMaxEstoque = 999;
             if ((this.saldoAtual + mov.getQuantidade()) > limiteMaxEstoque) {
-                System.out.println("Erro: Não é possível adicionar esta quantidade. O estoque excederia o limite máximo de " + limiteMaxEstoque + " unidades.");
-                return null; // Retorna null se exceder o limite
+                throw new EstoqueException("Não é possível adicionar esta quantidade. O estoque excederia o limite máximo de " + limiteMaxEstoque + " unidades.");
             }
         }
 
         // 6° Passo: Caso passe por todas validações adiciona ao historico e atualiza o saldo
-        mov.processarMovimentacao();
-        adicionarHistorico(mov);
+        ((Processavel) mov).processarMovimentacao();
+        historico.add(mov);
         atualizarSaldo(mov);
         return mov;
     }
 
-    public void adicionarHistorico(MovimentacaoEstoque mov){
-        // Para criar um loop de 1 a 10 (Ao chegar em 10 volta para o 1)
-        historico[indiceAtual % 10] = mov;
-        indiceAtual++;
+    public void mostrarHistorico(){
+        if (historico.isEmpty()) { // Para evitar mostrar uma lista vazia
+        System.out.println("Nenhuma movimentação registrada.");
+        return;
+        }
+        int i = 1; 
+        for (MovimentacaoEstoque mov : historico){ // A variável "mov" vai percorrer todos os números dentro de "lista"
+            String infoData = "";
+            if (mov.getData() != null && !mov.getData().isEmpty()) { // Verifica se não é nula e não está vazia
+            infoData = " em " + mov.getData();
+            }      
+
+            String sinal = mov.getTipo().equals("Entrada") ? "+" : "-"; // Cria uma variável para registrar o sinal da movimentação
+            System.out.println(i + ". " + sinal + mov.getQuantidade() + " unidades (" + mov.getTipo() + ")" + infoData); // Mostra o historico formatado
+            i++;
+        }
+        System.out.println("Saldo Total: " + this.getSaldoAtual() + " unidades");
+        System.out.println("");
     }
 
     // Métodos getters para acessar o historico e o saldo atual
-    public MovimentacaoEstoque[] getHistorico() {
+    public ArrayList<MovimentacaoEstoque> getHistorico() {
         return historico;
     }
     public int getSaldoAtual(){
